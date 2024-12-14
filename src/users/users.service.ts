@@ -1,4 +1,4 @@
-import { Body, Injectable, Param } from '@nestjs/common';
+import { Body, Injectable, NotFoundException, Param } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
@@ -17,22 +17,31 @@ export class UsersService {
   }
 
   async findAll() {
-    const allData = await this.userModel.find();
-    return allData;
+    const allUsers = await this.userModel.find();
+    return allUsers;
   }
 
   async findOne(@Param() id: number) {
     const data = await this.userModel.findById(id);
+    if (!data) {
+      throw new NotFoundException();
+    }
     return data;
   }
 
   async update(@Param() id: number, @Body() updateUserDto: UpdateUserDto) {
     const data = this.userModel.findByIdAndUpdate(id, updateUserDto);
+    if (!data) {
+      throw new NotFoundException();
+    }
     return data;
   }
 
   async remove(@Param() id: number) {
     const data = this.userModel.findByIdAndDelete(id);
+    if (!data) {
+      throw new NotFoundException();
+    }
     return data;
   }
 }

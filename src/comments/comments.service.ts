@@ -1,26 +1,51 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { Comment } from './entities/comment.entity';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class CommentsService {
-  create(createCommentDto: CreateCommentDto) {
-    return 'This action adds a new comment';
+  constructor(
+    @InjectModel(Comment.name) private readonly commentModel: Model<Comment>,
+  ) {}
+
+  async create(createCommentDto: CreateCommentDto) {
+    const newComment = new this.commentModel(createCommentDto);
+    await newComment.save();
+    return { message: 'Created.', data: newComment };
   }
 
-  findAll() {
-    return `This action returns all comments`;
+  async findAll() {
+    const allComments = await this.commentModel.find();
+    return allComments;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} comment`;
+  async findOne(id: string) {
+    const data = await this.commentModel.findById(id);
+    if (!data) {
+      throw new NotFoundException();
+    }
+    return data;
   }
 
-  update(id: number, updateCommentDto: UpdateCommentDto) {
-    return `This action updates a #${id} comment`;
+  async update(id: string, updateCommentDto: UpdateCommentDto) {
+    const data = await this.commentModel.findByIdAndUpdate(
+      id,
+      updateCommentDto,
+    );
+    if (!data) {
+      throw new NotFoundException();
+    }
+    return { message: 'Updated.', data: data };
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} comment`;
+  async remove(id: string) {
+    const data = await this.commentModel.findByIdAndDelete(id);
+    if (!data) {
+      throw new NotFoundException();
+    }
+    return { message: 'Deleted.', data: data };
   }
 }
