@@ -6,11 +6,14 @@ import {
   Patch,
   Param,
   Delete,
+  UseFilters,
 } from '@nestjs/common';
 import { CommentsService } from './comments.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
+import { HttpExceptionFilter } from 'src/exceptions/http-exception.filter';
 
+@UseFilters(new HttpExceptionFilter('user'))
 @Controller('comments')
 export class CommentsController {
   constructor(private readonly commentsService: CommentsService) {}

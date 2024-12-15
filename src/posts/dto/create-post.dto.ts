@@ -1,4 +1,4 @@
-import { IsMongoId, IsNotEmpty, IsString, Min } from 'class-validator';
+import { IsMongoId, IsNotEmpty, IsString, MinLength } from 'class-validator';
 
 export class CreatePostDto {
   @IsNotEmpty()
@@ -7,7 +7,7 @@ export class CreatePostDto {
 
   @IsNotEmpty()
   @IsString()
-  @Min(5)
+  @MinLength(5)
   title: string;
 
   @IsNotEmpty()

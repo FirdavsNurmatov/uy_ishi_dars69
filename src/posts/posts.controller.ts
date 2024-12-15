@@ -6,11 +6,14 @@ import {
   Patch,
   Param,
   Delete,
+  UseFilters,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
+import { HttpExceptionFilter } from 'src/exceptions/http-exception.filter';
 
+@UseFilters(new HttpExceptionFilter('user'))
 @Controller('posts')
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}

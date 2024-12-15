@@ -1,13 +1,13 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreatePostDto } from './create-post.dto';
-import { IsMongoId, IsString, Min } from 'class-validator';
+import { IsMongoId, IsString, MinLength } from 'class-validator';
 
 export class UpdatePostDto extends PartialType(CreatePostDto) {
   @IsMongoId()
   user_id?: string;
 
   @IsString()
-  @Min(5)
+  @MinLength(5)
   title?: string;
 
   @IsString()
